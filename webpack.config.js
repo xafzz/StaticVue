@@ -1,20 +1,24 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
 //  清理/dist文件夹
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+//vue-loader was used without the corresponding plugin. Make sure to include VueLoaderPlugin in your webpack config
+//vue3.0 不再用 vue-template-compiler
+//添加 @vue/compiler-sfc
+const {VueLoaderPlugin} = require('vue-loader')
+console.log('------->',__filename)
 
 module.exports = {
     mode: 'development', //'development' or 'production'
-    entry: './src/index.js',
-    // output:{
-    //     path: path.resolve(__dirname, 'dist'),
-    //     filename: 'foo.bundle.js'
-    //     // filename: '[name].js'
-    // },
+    entry: './src/main.ts',
+    output:{
+        publicPath:'/',
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js'
+    },
     devServer: {
         //提供在服务器内部在所有其他中间件之后执行自定义中间件的功能。
-        after: function (app, server, compiler) {
-        },
+        after: function (app, server, compiler) {},
         //提供在服务器内部先于所有其他中间件执行自定义中间件的功能
         before: function (app, server, compiler) {
             // app.get('/some/path', function (req, res) {
@@ -63,47 +67,26 @@ module.exports = {
     },
     module:{
         rules:[
-            // { test: /\.handlebars$/, loader: "handlebars-loader" }
+            {test: /\.vue$/, use: 'vue-loader'}
         ]
     },
     plugins: [
         new CleanWebpackPlugin(),
-        //https://github.com/jantimon/html-webpack-plugin#options
+        new VueLoaderPlugin(),
+        //放个页面 展示下
         new HtmlWebpackPlugin({
-            //true | ‘head’ | ‘body’ | false 。把所有产出文件注入到给定的 template 或templateContent。
-            // 当传入 true或者 ‘body’时所有javascript资源将被放置在body元素的底部，“head”则会放在head元素内。
-            inject: false,
-            title: '这111是标题',
-            // favicon:'',  //图标
-            meta: [{
-                name: 'description',
-                content: 'A better default template for html-webpack-plugin.'
-            }],
-            //挂载的id 我们采用挂载的方式
+            inject: 'body',
+            // template: './src/template/index.html'
+            // title:'111',
             appMountId: 'app',
             //输出到挂载到 id 里面
-            appMountHtmlSnippet: '999999999999999999999999999',
-            //输出到 head 里面
-            // headHtmlSnippet: '<style>div.app-spinner {position: fixed;top:50%;left:50%;background: red;}</style >',
-            //输出到 body 里面  对应到模版里面到写法 <%= htmlWebpackPlugin.tags.bodyTags %>
-            // bodyHtmlSnippet: '这是我手动注入的内容1',
-            //模版是否可以只用一个 输出多个
+            // appMountHtmlSnippet: '999999999999999999999999999',
             template: './webpack-template/index.ejs',
-            outJs:'main.js'
-            // template: './src/template/index.html'
-            // template: require('html-webpack-template'), //默认到语法规则
-            // minify : {…} | false 。传一个html-minifier 配置object来压缩输出。
-            // 如果是true，会给所有包含的script和css添加一个唯一的webpack编译hash值。这对于缓存清除非常有用。
-            // hash:true, //false
-            //如果传入true（默认），只有在文件变化时才 发送（emit）文件。
-            // cache : true | false
-            //如果传入true（默认），错误信息将写入html页面。
-            //showErrors : true | false
-            //chunks : 只允许你添加chunks 。（例如：只有单元测试块 ）
-            // chunksSortMode : 在chunk被插入到html之前，你可以控制它们的排序。允许的值 ‘none’ | ‘auto’ | ‘dependency’ | {function} 默认为‘auto’.
-            //excludeChunks : 允许你跳过一些chunks（例如，不要单元测试的 chunk）.
-            //xhtml : 用于生成的HTML文件的标题。
-            //title : true | false。如果是true，把link标签渲染为自闭合标签，XHTML要这么干的。默认false。
         })
-    ]
+    ],
+    resolve: {
+        alias: {
+            '@': require('path').join(__dirname, 'src')
+        }
+    }
 };

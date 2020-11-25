@@ -5,7 +5,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 module.exports = {
     mode: 'development', //'development' or 'production'
-    entry: './src/index.js',
+    entry: './src/main.ts',
     // output:{
     //     path: path.resolve(__dirname, 'dist'),
     //     filename: 'foo.bundle.js'
@@ -89,7 +89,7 @@ module.exports = {
             // bodyHtmlSnippet: '这是我手动注入的内容1',
             //模版是否可以只用一个 输出多个
             template: './webpack-template/index.ejs',
-            outJs:'main.js'
+            outJs:'main.ts'
             // template: './src/template/index.html'
             // template: require('html-webpack-template'), //默认到语法规则
             // minify : {…} | false 。传一个html-minifier 配置object来压缩输出。
